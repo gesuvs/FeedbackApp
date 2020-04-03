@@ -7,12 +7,29 @@ app.use(cors());
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
-app.post("/feed", (req, res) => {
-  const { apresentacao, comentario, conteudo, didatica, dominio } = req.body;
-  db.collection("feedback")
-    .add({ apresentacao, comentario, conteudo, didatica, dominio })
-    .then(() => res.send("criado"))
-    .catch(err => console.error(err));
+app.post("/feed", async (req, res) => {
+  const {
+    apresentacao,
+    comentario,
+    conteudo,
+    didatica,
+    dominio,
+    ip
+  } = req.body;
+  await db
+    .collection("feedback")
+    .where("ip", "==", ip)
+    .get()
+    .then(query => {
+      if (!query.empty) {
+        res.sendStatus(403);
+      } else {
+        db.collection("feedback")
+          .add({ apresentacao, comentario, conteudo, didatica, dominio, ip })
+          .then(() => res.sendStatus(201))
+          .catch(err => res.status(400).send({ err }));
+      }
+    });
 });
 
 exports.api = functions.https.onRequest(app);

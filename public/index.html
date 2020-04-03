@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Questionario</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
-  <body>
+  <body onload="getIp()">
     <header>
       <div class="container">
         <h1 class="titulo">Sejam Bem vindos</h1>
@@ -44,7 +44,7 @@
           <label for="conteudo">
             Sobre o conteudo em aula, voce considera:
           </label>
-          <select required name="s_conteudo" id="conteudo">
+          <select name="s_conteudo" id="conteudo">
             <option value="">Selecione uma opção *</option>
             <option value="5">Foi incrivel 💚</option>
             <option value="4">Foi otimo, aprendi bastante 🤘</option>
@@ -56,7 +56,7 @@
           <label for="didatica">
             Sobre a didatica do professor em aula, voce considera:
           </label>
-          <select required name="s_didatica" id="didatica">
+          <select name="s_didatica" id="didatica">
             <option value="">Selecione uma opção * </option>
             <option value="5">Foi incrivel 💚</option>
             <option value="4">Foi otimo, aprendi bastante 🤘</option>
@@ -67,7 +67,7 @@
           <label for="dominio">
             Sobre o dominio no assunto do professor em aula, voce considera:
           </label>
-          <select required name="s_dominio" id="dominio">
+          <select name="s_dominio" id="dominio">
             <option value="">Selecione uma opção * </option>
             <option value="5">Foi incrivel 💚</option>
             <option value="4">Foi otimo, aprendi bastante 🤘</option>
@@ -78,7 +78,7 @@
           <label for="apresentacao">
             Sobre a apresentação da aula, voce considera:
           </label>
-          <select required name="s_apresentacao" id="apresentacao">
+          <select name="s_apresentacao" id="apresentacao">
             <option value="">Selecione uma opção * </option>
             <option value="5">Foi incrivel 💚</option>
             <option value="4">Foi otimo, aprendi bastante 🤘</option>
@@ -92,7 +92,7 @@
             Comentario:
           </label>
           <textarea
-            placeholder="Qual a sua opnião das aulas..."
+            placeholder="Qual a sua opinião das aulas..."
             name=""
             id="comentario"
             cols="30"
@@ -117,6 +117,7 @@
 </html>
 <script>
   let loading = false;
+  let ipAddress = {};
 
   function spinner() {
     if (loading == true) {
@@ -125,8 +126,30 @@
     }
   }
 
+  async function getIp() {
+    await fetch("https://ipapi.co/json/", {
+      method: "GET",
+      mode: "cors"
+    }).then(res => {
+      res.text().then(result => {
+        ipAddress = JSON.parse(result);
+      });
+    });
+  }
+
   async function sendFeed() {
     window.event.preventDefault();
+    if (
+      apresentacao.value < 1 ||
+      conteudo.value < 1 ||
+      didatica.value < 1 ||
+      dominio.value < 1
+    ) {
+      alert("err");
+      return;
+    }
+    let { ip } = ipAddress;
+    console.log(ip);
     loading = true;
     spinner();
     await fetch(
@@ -143,7 +166,8 @@
           comentario: comentario.value,
           conteudo: Number(conteudo.value),
           didatica: Number(didatica.value),
-          dominio: Number(dominio.value)
+          dominio: Number(dominio.value),
+          ip: ip
         })
       }
     ).then(res => {
