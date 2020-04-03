@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1 class="titulo">Sejam Bem vindos</h1>
+        <nav>
+          <ul>
+            <li>
+              <a href="https://www.linkedin.com/in/guilherme-jesus-1594a118b/">
+                <img
+                  alt="icone do linkedin"
+                  srcset="https://www.flaticon.com/br/premium-icon/icons/svg/2392/2392489.svg"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="https://www.github.com/GBernardo10/">
+                <img
+                  alt="icone do linkedin"
+                  srcset="https://image.flaticon.com/icons/svg/1051/1051275.svg"
+                />
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <section id="content" class="container">
+      <form onsubmit="sendFeed()" method="POST">
+        <h1>Responda o questionario abaixo !</h1>
+        <small>(*) Obrigatorios</small>
+        <div class="group">
+          <label for="conteudo">
+            Sobre o conteudo em aula, voce considera:
+          </label>
+          <select required name="s_conteudo" id="conteudo">
+            <option value="">Selecione uma opção *</option>
+            <option value="5">Foi incrivel 💚</option>
+            <option value="4">Foi otimo, aprendi bastante 🤘</option>
+            <option value="3">Consegui entender... 🤔 </option>
+            <option value="1">Foi terrivel ! 🙁</option>
+            <option value="2">Da pra melhorar 🙈 </option>
+          </select>
+
+          <label for="didatica">
+            Sobre a didatica do professor em aula, voce considera:
+          </label>
+          <select required name="s_didatica" id="didatica">
+            <option value="">Selecione uma opção * </option>
+            <option value="5">Foi incrivel 💚</option>
+            <option value="4">Foi otimo, aprendi bastante 🤘</option>
+            <option value="3">Consegui entender... 🤔 </option>
+            <option value="1">Foi terrivel ! 🙁</option>
+            <option value="2">Da pra melhorar 🙈 </option>
+          </select>
+          <label for="dominio">
+            Sobre o dominio no assunto do professor em aula, voce considera:
+          </label>
+          <select required name="s_dominio" id="dominio">
+            <option value="">Selecione uma opção * </option>
+            <option value="5">Foi incrivel 💚</option>
+            <option value="4">Foi otimo, aprendi bastante 🤘</option>
+            <option value="3">Consegui entender... 🤔 </option>
+            <option value="1">Foi terrivel ! 🙁</option>
+            <option value="2">Da pra melhorar 🙈 </option>
+          </select>
+          <label for="apresentacao">
+            Sobre a apresentação da aula, voce considera:
+          </label>
+          <select required name="s_apresentacao" id="apresentacao">
+            <option value="">Selecione uma opção * </option>
+            <option value="5">Foi incrivel 💚</option>
+            <option value="4">Foi otimo, aprendi bastante 🤘</option>
+            <option value="3">Consegui entender... 🤔 </option>
+            <option value="1">Foi terrivel ! 🙁</option>
+            <option value="2">Da pra melhorar 🙈 </option>
+          </select>
+        </div>
+        <section class="comentario">
+          <label for="comentario">
+            Comentario:
+          </label>
+          <textarea
+            placeholder="Qual a sua opnião das aulas..."
+            name=""
+            id="comentario"
+            cols="30"
+            rows="10"
+          ></textarea>
+        </section>
+        <button class="btnFeed">
+          Enviar -> Feed
+        </button>
+      </form>
+    </section>
+    <section class="container">
+      <div
+        id="spinnerCss"
+        style="display: none; margin: 40% auto;"
+        class="loader"
+      >
+        Loading...
+      </div>
+    </section>
+  </body>
+</html>
+<script>
+  let loading = false;
+
+  function spinner() {
+    if (loading == true) {
+      spinnerCss.style.display = "block";
+      content.style.display = "none";
+    }
+  }
+
+  async function sendFeed() {
+    window.event.preventDefault();
+    loading = true;
+    spinner();
+    await fetch(
+      "https://cors-anywhere.herokuapp.com/" +
+        "https://us-central1-excellent-guide-253904.cloudfunctions.net/api/feed",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Methods": "PUT,PATCH,DELETE"
+        },
+        body: JSON.stringify({
+          apresentacao: Number(apresentacao.value),
+          comentario: comentario.value,
+          conteudo: Number(conteudo.value),
+          didatica: Number(didatica.value),
+          dominio: Number(dominio.value)
+        })
+      }
+    ).then(res => {
+      if (res.status == 200) {
+        window.location.href = "./pages/obrigado.html";
+      }
+    });
+  }
+</script>
