@@ -44,7 +44,7 @@
           <label for="conteudo">
             Sobre o conteudo em aula, voce considera:
           </label>
-          <select name="s_conteudo" id="conteudo">
+          <select required name="s_conteudo" id="conteudo">
             <option value="">Selecione uma opção *</option>
             <option value="5">Foi incrivel 💚</option>
             <option value="4">Foi otimo, aprendi bastante 🤘</option>
@@ -56,7 +56,7 @@
           <label for="didatica">
             Sobre a didatica do professor em aula, voce considera:
           </label>
-          <select name="s_didatica" id="didatica">
+          <select required name="s_didatica" id="didatica">
             <option value="">Selecione uma opção * </option>
             <option value="5">Foi incrivel 💚</option>
             <option value="4">Foi otimo, aprendi bastante 🤘</option>
@@ -67,7 +67,7 @@
           <label for="dominio">
             Sobre o dominio no assunto do professor em aula, voce considera:
           </label>
-          <select name="s_dominio" id="dominio">
+          <select required name="s_dominio" id="dominio">
             <option value="">Selecione uma opção * </option>
             <option value="5">Foi incrivel 💚</option>
             <option value="4">Foi otimo, aprendi bastante 🤘</option>
@@ -78,7 +78,7 @@
           <label for="apresentacao">
             Sobre a apresentação da aula, voce considera:
           </label>
-          <select name="s_apresentacao" id="apresentacao">
+          <select required name="s_apresentacao" id="apresentacao">
             <option value="">Selecione uma opção * </option>
             <option value="5">Foi incrivel 💚</option>
             <option value="4">Foi otimo, aprendi bastante 🤘</option>
@@ -115,65 +115,11 @@
     </section>
   </body>
 </html>
+<script src="assets/js/sendAnswer.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha256.js"></script>
 <script>
-  let loading = false;
-  let ipAddress = {};
-
-  function spinner() {
-    if (loading == true) {
-      spinnerCss.style.display = "block";
-      content.style.display = "none";
-    }
-  }
-
-  async function getIp() {
-    await fetch("https://ipapi.co/json/", {
-      method: "GET",
-      mode: "cors"
-    }).then(res => {
-      res.text().then(result => {
-        ipAddress = JSON.parse(result);
-      });
-    });
-  }
-
-  async function sendFeed() {
-    window.event.preventDefault();
-    if (
-      apresentacao.value < 1 ||
-      conteudo.value < 1 ||
-      didatica.value < 1 ||
-      dominio.value < 1
-    ) {
-      alert("err");
-      return;
-    }
-    let { ip } = ipAddress;
-    console.log(ip);
-    loading = true;
-    spinner();
-    await fetch(
-      "https://cors-anywhere.herokuapp.com/" +
-        "https://us-central1-excellent-guide-253904.cloudfunctions.net/api/feed",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Methods": "PUT,PATCH,DELETE"
-        },
-        body: JSON.stringify({
-          apresentacao: Number(apresentacao.value),
-          comentario: comentario.value,
-          conteudo: Number(conteudo.value),
-          didatica: Number(didatica.value),
-          dominio: Number(dominio.value),
-          ip: ip
-        })
-      }
-    ).then(res => {
-      if (res.status == 200) {
-        window.location.href = "./pages/obrigado.html";
-      }
-    });
-  }
+  var initialPage = location.pathname;
+  var hash = CryptoJS.SHA256(initialPage);
+  console.log(initialPage);
+  console.log(hash.toString());
 </script>
